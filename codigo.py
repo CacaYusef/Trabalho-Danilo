@@ -15,6 +15,7 @@ from pathlib import Path
 import pingouin as pg
 from lets_plot import *
 
+
 LetsPlot.setup_html(no_js=True)
 
 plt.style.use("https://raw.githubusercontent.com/aeturrell/core_python/main/plot_style.txt")
@@ -31,9 +32,11 @@ caminho_empresas = diretorio_base / "dados" / "Empresas.xlsx"
 
 # Importa a planilha
 empresas = pd.read_excel(caminho_empresas)
+empresas.info()
 
 # Planilha de empresas sem dados faltantes na coluna "talent6"
 empresas = empresas.dropna(subset=['talent6'])
+
 
 
 # PASSO 3 (Criando as colunas: operations, monitor, people & target. Colunas essas que serão uma média dos critérios semelhantes entre as várias colunas
@@ -51,11 +54,11 @@ coluna_people = ["talent1", "talent2", "talent3", "talent4", "talent5", "talent6
 
 coluna_target = ["perf6", "perf7", "perf8", "perf9", "perf10"]
 
-empresas["operations"] = empresas[coluna_operations].mean(axis=1) # <-- axis=1 aqui faz com que o python calcule linha por linha, diferente de axis=0, que calcula média da amostra total da coluna
-empresas["monitor"] = empresas[coluna_monitor].mean(axis=1)
-empresas["people"] = empresas[coluna_people].mean(axis=1)
-empresas["target"] = empresas[coluna_target].mean(axis=1)
-empresas["management"] = empresas[["operations", "monitor", "people", "target"]].mean(axis=1)
+empresas["operations"] = empresas[coluna_operations].mean(axis=1).round(2) # <-- axis=1 aqui faz com que o python calcule linha por linha, diferente de axis=0, que calcula média da amostra total da coluna
+empresas["monitor"] = empresas[coluna_monitor].mean(axis=1).round(2)
+empresas["people"] = empresas[coluna_people].mean(axis=1).round(2)
+empresas["target"] = empresas[coluna_target].mean(axis=1).round(2)
+empresas["management"] = empresas[["operations", "monitor", "people", "target"]].mean(axis=1).round(2)
 
 
 # PASSO 4 (preparando tabela para rankear os países de acordo com cada critério)
@@ -63,6 +66,15 @@ empresas["management"] = empresas[["operations", "monitor", "people", "target"]]
 
 empresas_sem_colunas = empresas[["country", "operations", "monitor", "people", "target", "management" ]]
 
-empresas_agrupado = empresas_sem_colunas.groupby("country").mean(numeric_only=True)
+empresas_agrupado = empresas_sem_colunas.groupby("country").mean(numeric_only=True).round(2)
 
-empresas_agrupado.head()
+empresas_agrupado.sort_values(by=["management"], ascending = False)
+
+
+
+
+
+
+
+
+
