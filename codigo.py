@@ -101,28 +101,36 @@ plt.xlim(0, 5)
 
 plt.show()
 
+
 # Passo 6 Comparando as notas das empresas do Brasil, com a outros países
 
 separações = np.linspace(1, 5, 25) # Definindo que o histograma vai de 1 a 5 dividido em 25 pedaçinhos ( intervalos de 0.2 em 0.2)
 
 
+def filtrar_empresas_por_pais(tabela, país):
+    return tabela[tabela["country"] == país]["management"].dropna()
+
 # Pegando a média das empresas de cada país, e transformando num vetor
-brasil_empresas = médias_por_critério[médias_por_critério["country"] == "Brazil"]["management"].dropna() # Vendo a distribuição de management quando country == Brazil
-india_empresas = médias_por_critério[médias_por_critério["country"] == "India"]["management"].dropna() # Vendo a distribuição de management quando country == India
-Mexico_empresas = médias_por_critério[médias_por_critério["country"] == "Mexico"]["management"].dropna() # Vendo a distribuição de management quando country == Mexico
-Reino_Unido_empresas = médias_por_critério[médias_por_critério["country"] == "Great Britain"]["management"].dropna()
-Estados_Unidos_empresas = médias_por_critério[médias_por_critério['country'] == 'United States']['management'].dropna()
+brasil_empresas = filtrar_empresas_por_pais(médias_por_critério, "Brazil") # Vendo a distribuição de management quando country == Brazil
+india_empresas = filtrar_empresas_por_pais(médias_por_critério, "India") # Vendo a distribuição de management quando country == India
+Mexico_empresas = filtrar_empresas_por_pais(médias_por_critério, "Mexico") # Vendo a distribuição de management quando country == Mexico
+Reino_Unido_empresas = filtrar_empresas_por_pais(médias_por_critério, "Great Britain")
+Estados_Unidos_empresas = filtrar_empresas_por_pais(médias_por_critério, "United States")
 
-# Transformando o número de empresas vistas em frequencia relativa, mas por que disso?
+
+# A partir daqui, vou transformar o número de empresas vistas em frequencia relativa, mas por que disso?
 # Bom, não faria sentido eu dizer que o Brasil é melhor que a Índia em um cenário em que o 
-# Brasil tenha 100 empresas, e a Índia só 50, supondo hipotéticamente que ambos os países possuem
-# Empresas com notas identicas, então por frequencia, fica mais claro ver no gráfico que ambos seriam equivalentes
+# Brasil tenha 100 empresas e a Índia só 10, supondo hipotéticamente que ambos os países tenham todas as
+# Empresas com notas identicas. Logo, por frequencia, fica mais claro ver no gráfico que ambos seriam equivalentes
 
-pesos_brasil = np.ones(len(brasil_empresas)) / len(brasil_empresas) # fração 1/n empresas <- peso para cada empresa no gráfico
-pesos_india = np.ones(len(india_empresas)) / len(india_empresas) 
-pesos_Mexico = np.ones(len(Mexico_empresas))/ len(Mexico_empresas) 
-pesos_Reino_Unido = np.ones(len(Reino_Unido_empresas))/ len(Reino_Unido_empresas)
-pesos_Estados_Unidos = np.ones(len(Estados_Unidos_empresas))/ len(Estados_Unidos_empresas)
+def calcular_pesos(dados):
+    return np.ones(len(dados)) / len(dados) # fração 1/n empresas <- peso para cada empresa no gráfico
+
+pesos_brasil = calcular_pesos(brasil_empresas) 
+pesos_india = calcular_pesos(india_empresas)
+pesos_Mexico = calcular_pesos(Mexico_empresas)
+pesos_Reino_Unido = calcular_pesos(Reino_Unido_empresas)
+pesos_Estados_Unidos = calcular_pesos(Estados_Unidos_empresas)
 
 
 fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2,2) # Quebrando o plot em 4 pedaços para 4 gráficos diferentes 
@@ -131,71 +139,181 @@ fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2,2) # Quebrando o plot em 4 pedaç
 #comparação das empresas Brasil X India em um histograma
 plt.subplots_adjust(hspace=0.50, wspace=0.25)
 
-ax1.hist(brasil_empresas, bins=separações, weights=pesos_brasil,
-         alpha=0.8,label="Brazil",color="#6cc47c",edgecolor="black")
+ax1.hist(brasil_empresas, 
+         bins=separações, 
+         weights=pesos_brasil,
+         alpha=0.8,
+         label="Brazil",
+         color="#6cc47c",
+         edgecolor="black")
 
-ax1.hist(india_empresas,bins=separações,weights=pesos_india, alpha=0.6, 
+ax1.hist(india_empresas,
+         bins=separações,
+         weights=pesos_india, 
+         alpha=0.6, 
          label="India",color="#d65a31",edgecolor="black")
 
 ax1.legend(loc="upper right", fontsize="small")
 ax1.set_title("Distribuição proporcional das empresas\npor nota Brasil x Índia", fontsize=7.5)
 ax1.tick_params(axis="y", labelsize=8)
+
 ax1.tick_params(axis="x", labelsize=8)
 ax1.set_xlim(1, 5)
 ax1.yaxis.set_major_formatter(PercentFormatter(1.0)) # <- usando pacote que importei para formar em %
 
 #
 #
-#
 
 #comparação das empresas Brasil X Mexico em um histograma
-ax2.hist(brasil_empresas, bins=separações, weights=pesos_brasil,
-         alpha=0.7,label="Brazil",color="#6cc47c",edgecolor="black")
+ax2.hist(brasil_empresas, 
+         bins=separações, 
+         weights=pesos_brasil,
+         alpha=0.7,
+         label="Brazil",
+         color="#6cc47c",
+         edgecolor="black")
 
-ax2.hist(Mexico_empresas,bins=separações,weights=pesos_Mexico, alpha=0.5, 
-         label="Mexico",color="#265425",edgecolor="black")
+ax2.hist(Mexico_empresas,
+         bins=separações,
+         weights=pesos_Mexico, 
+         alpha=0.5, 
+         label="Mexico",
+         color="#265425",
+         edgecolor="black")
 
 ax2.legend(loc="upper right", fontsize="small")
 ax2.set_title("Distribuição proporcional das empresas\npor nota Brasil x Mexico", fontsize=7.5)
 ax2.tick_params(axis="y", labelsize=8)
+
 ax2.tick_params(axis="x", labelsize=8)
 ax2.set_xlim(1, 5)
 ax2.yaxis.set_major_formatter(PercentFormatter(1.0)) 
 
 #
 #
-#
 
 #comparação das empresas Brasil X Reino Unido em um histograma
-ax3.hist(brasil_empresas, bins=separações, weights=pesos_brasil,
-         alpha=0.7,label="Brazil",color="#6cc47c",edgecolor="black")
+ax3.hist(brasil_empresas, 
+         bins=separações, 
+         weights=pesos_brasil,
+         alpha=0.7,label="Brazil",
+         color="#6cc47c",
+         edgecolor="black")
 
-ax3.hist(Reino_Unido_empresas,bins=separações,weights=pesos_Reino_Unido, alpha=0.5, 
-         label="Reino Unido",color="#11149e",edgecolor="black")
+ax3.hist(Reino_Unido_empresas,
+         bins=separações,
+         weights=pesos_Reino_Unido, 
+         alpha=0.5, 
+         label="Reino Unido",
+         color="#11149e",
+         edgecolor="black")
 
 ax3.legend( fontsize= 'small', bbox_to_anchor=(0.5, -0.3, 0.1, 0.1) )
 ax3.set_title("Distribuição proporcional das empresas\npor nota Brasil x Reino Unido", fontsize=7.5)
 ax3.tick_params(axis="y", labelsize=8)
+
 ax3.tick_params(axis="x", labelsize=8)
 ax3.set_xlim(1, 5)
 ax3.yaxis.set_major_formatter(PercentFormatter(1.0)) 
 
 #
 #
-#
-#comparação das empresas Brasil X Estados Unidos em um histograma
-ax4.hist(brasil_empresas, bins=separações, weights=pesos_brasil,
-         alpha=0.7,label="Brazil",color="#6cc47c",edgecolor="black")
 
-ax4.hist(Estados_Unidos_empresas,bins=separações,weights=pesos_Estados_Unidos, alpha=0.5, 
-         label="Estados Unidos",color="#0394fc",edgecolor="black")
+#comparação das empresas Brasil X Estados Unidos em um histograma
+ax4.hist(brasil_empresas, 
+         bins=separações, 
+         weights=pesos_brasil,
+         alpha=0.7,
+         label="Brazil",
+         color="#6cc47c",
+         edgecolor="black")
+
+ax4.hist(Estados_Unidos_empresas,
+         bins=separações,
+         weights=pesos_Estados_Unidos,
+         alpha=0.5, 
+         label="Estados Unidos",
+         color="#0394fc",
+         edgecolor="black")
 
 ax4.legend( fontsize= 'small', bbox_to_anchor=(0.6, -0.3, 0.1, 0.1) )
 ax4.set_title("Distribuição proporcional das empresas\npor nota Brasil x Estados Unidos", fontsize=7.5)
 ax4.tick_params(axis="y", labelsize=8)
+
 ax4.tick_params(axis="x", labelsize=8)
 ax4.set_xlim(1, 5)
 ax4.yaxis.set_major_formatter(PercentFormatter(1.0)) 
+
+
+
+# PASSO 8 BOX PLOT <- Para scatter plot precisei do amigo chat
+
+fig, ax = plt.subplots(figsize=(8, 6))
+
+dados_paises = {
+    "Brazil": brasil_empresas,
+    "US": Estados_Unidos_empresas,
+    "UK": Reino_Unido_empresas,
+    "India": india_empresas,
+    "Mexico": Mexico_empresas
+}
+
+cores = {
+    "Brazil": "#6cc47c",
+    "US": "#0394fc",
+    "UK": "#11149e",
+    "India": "#d65a31",
+    "Mexico": "#265425"
+}
+
+labels = list(dados_paises.keys())
+dados = list(dados_paises.values())
+posicoes = np.arange(1, len(labels) + 1)
+
+boxplot = ax.boxplot(dados, labels=labels, patch_artist=True, widths=0.5,
+    flierprops=dict(
+        marker='*',
+        markersize=2,
+        markerfacecolor='black',
+        markeredgecolor='black'
+    )
+)
+
+for caixa, mediana, pais in zip(boxplot["boxes"], boxplot["medians"], labels):
+    cor = cores[pais]
+
+    caixa.set_facecolor(cor)
+    caixa.set_edgecolor("black")
+    caixa.set_alpha(0.35)
+
+    mediana.set_color(cor)
+    mediana.set_alpha(1)
+    mediana.set_linewidth(2.5)
+
+for posicao, pais in zip(posicoes, labels):
+    valores = dados_paises[pais]
+
+    jitter = np.random.normal(loc=posicao,scale=0.05,size=len(valores))
+
+    ax.scatter(jitter, valores, color=cores[pais],
+        alpha=0.10, 
+        s=20, 
+        edgecolor="black", 
+        linewidth=0.3, 
+        zorder=3)
+
+ax.set_title("Distribuição das notas de administração por país", fontsize=12)
+ax.set_ylabel("Nota média de administração")
+ax.set_ylim(1, 5)
+
+ax.grid(axis="y", alpha=0.3)
+
+plt.show()
+
+# Passo 9 Medindo a confiabilidade dos Dados
+
+
+
 
 
 
