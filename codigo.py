@@ -12,8 +12,8 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
-import pingouin as pg
-from lets_plot import *
+import math
+import scipy.stats as stats
 from matplotlib.ticker import PercentFormatter
 
 plt.style.use("ggplot")
@@ -104,7 +104,7 @@ plt.show()
 
 # Passo 6 Comparando as notas das empresas do Brasil, com a outros países
 
-separações = np.linspace(1, 5, 25) # Definindo que o histograma vai de 1 a 5 dividido em 25 pedaçinhos ( intervalos de 0.2 em 0.2)
+separações = np.linspace(1, 5, 26) # Definindo que o histograma vai de 1 a 5 dividido em 25 pedaçinhos ( intervalos de 0.2 em 0.2)
 
 
 def filtrar_empresas_por_pais(tabela, país):
@@ -153,11 +153,11 @@ ax1.hist(india_empresas,
          alpha=0.6, 
          label="India",color="#d65a31",edgecolor="black")
 
-ax1.legend(loc="upper right", fontsize="small")
+legenda_plot1 = ax1.legend(loc="upper right", fontsize=6)
 ax1.set_title("Distribuição proporcional das empresas\npor nota Brasil x Índia", fontsize=7.5)
-ax1.tick_params(axis="y", labelsize=8)
+ax1.tick_params(axis="y", labelsize=6)
 
-ax1.tick_params(axis="x", labelsize=8)
+ax1.tick_params(axis="x", labelsize=6)
 ax1.set_xlim(1, 5)
 ax1.yaxis.set_major_formatter(PercentFormatter(1.0)) # <- usando pacote que importei para formar em %
 
@@ -181,11 +181,11 @@ ax2.hist(Mexico_empresas,
          color="#265425",
          edgecolor="black")
 
-ax2.legend(loc="upper right", fontsize="small")
+legenda_plot2 = ax2.legend(loc="upper right", fontsize=6)
 ax2.set_title("Distribuição proporcional das empresas\npor nota Brasil x Mexico", fontsize=7.5)
-ax2.tick_params(axis="y", labelsize=8)
+ax2.tick_params(axis="y", labelsize=6)
 
-ax2.tick_params(axis="x", labelsize=8)
+ax2.tick_params(axis="x", labelsize=6)
 ax2.set_xlim(1, 5)
 ax2.yaxis.set_major_formatter(PercentFormatter(1.0)) 
 
@@ -204,15 +204,15 @@ ax3.hist(Reino_Unido_empresas,
          bins=separações,
          weights=pesos_Reino_Unido, 
          alpha=0.5, 
-         label="Reino Unido",
+         label="UK",
          color="#11149e",
          edgecolor="black")
 
-ax3.legend( fontsize= 'small', bbox_to_anchor=(0.5, -0.3, 0.1, 0.1) )
+legenda_plot3 = ax3.legend(loc="upper right", fontsize= 6)
 ax3.set_title("Distribuição proporcional das empresas\npor nota Brasil x Reino Unido", fontsize=7.5)
-ax3.tick_params(axis="y", labelsize=8)
+ax3.tick_params(axis="y", labelsize=6)
 
-ax3.tick_params(axis="x", labelsize=8)
+ax3.tick_params(axis="x", labelsize=6)
 ax3.set_xlim(1, 5)
 ax3.yaxis.set_major_formatter(PercentFormatter(1.0)) 
 
@@ -232,15 +232,15 @@ ax4.hist(Estados_Unidos_empresas,
          bins=separações,
          weights=pesos_Estados_Unidos,
          alpha=0.5, 
-         label="Estados Unidos",
+         label="US",
          color="#0394fc",
          edgecolor="black")
 
-ax4.legend( fontsize= 'small', bbox_to_anchor=(0.6, -0.3, 0.1, 0.1) )
+legenda_plot4 = ax4.legend(loc="upper right", fontsize= 6)
 ax4.set_title("Distribuição proporcional das empresas\npor nota Brasil x Estados Unidos", fontsize=7.5)
-ax4.tick_params(axis="y", labelsize=8)
+ax4.tick_params(axis="y", labelsize=6)
 
-ax4.tick_params(axis="x", labelsize=8)
+ax4.tick_params(axis="x", labelsize=6)
 ax4.set_xlim(1, 5)
 ax4.yaxis.set_major_formatter(PercentFormatter(1.0)) 
 
